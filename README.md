@@ -22,7 +22,7 @@ cd k8sTraining
 
 **Setting up Nginx as a Reverse Proxy for Apache using K8s. Jenkins, Istio, K8s Dashboard and Kiali deployed**
 
-1. **Instalar kind: [https://kind.sigs.k8s.io/docs/user/quick-start/#installation**](https://kind.sigs.k8s.io/docs/user/quick-start/#installation)**
+1. **Instalar kind: [https://kind.sigs.k8s.io/docs/user/quick-start/#installation](https://kind.sigs.k8s.io/docs/user/quick-start/#installation)**
 1. **Crear archivo de configuración de cluster (cluster-config.yaml):** 
 
 cluster-config.yaml
@@ -39,7 +39,7 @@ nodes:
 ```
 **NOTAS:**  
 
-- el extraPortMappings es importante para entornos que usen Docker Desktop, porque sino  la  configuración  de  kind  impide  luego  acceder  a  contenidos  del  servidor Apache (u otro) a través de localhost:30000  (u otro puerto mayor que el 30000). Para más documentación: [https://kind.sigs.k8s.io/docs/user/configuration/#extra-port-mappings** ](https://kind.sigs.k8s.io/docs/user/configuration/#extra-port-mappings)**
+- el extraPortMappings es importante para entornos que usen Docker Desktop, porque sino  la  configuración  de  kind  impide  luego  acceder  a  contenidos  del  servidor Apache (u otro) a través de localhost:30000  (u otro puerto mayor que el 30000). Para más documentación: [https://kind.sigs.k8s.io/docs/user/configuration/#extra-port-mappings](https://kind.sigs.k8s.io/docs/user/configuration/#extra-port-mappings)**
 
 - Se podrían añadir workers con la línea
 ``` yaml
