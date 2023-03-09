@@ -5,6 +5,10 @@ clusterName= input("Introduce your cluster name (default 'trainingPath'): ") or 
 
 # Define the commands to be executed
 commands = {
+    "Part 0: Download the materials": [
+        "git clone https://github.com/huzmgod/k8sTraining.git",
+        "cd k8sTraining",
+    ],
     "Part 1: Apache and nginx": [
         f"kind create cluster --name={clusterName} --config=cluster-config.yaml",
         "kubectl apply -k .",
