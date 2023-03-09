@@ -31,7 +31,6 @@ commands = {
         "curl -L https://istio.io/downloadIstio | sh -",
         "cd istio-*",
         "export PATH=$PWD/bin:$PATH",
-        "cd ..",
         # Execute manually
         # "kubectl get crds | grep 'istio.io\|certmanager.k8s.io' | wc -l",
         "istioctl install --set profile=default",
@@ -43,7 +42,8 @@ commands = {
         # check manually
         # kubectl get svc -n istio-system
         # echo "INGRESS_HOST=$INGRESS_HOST, INGRESS_PORT=$INGRESS_PORT
-        "export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT"
+        "export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT",
+        "cd ..",
     ],
     "Part 4: Installing Kiali": [
         "kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.17/samples/addons/kiali.yaml --validate=false",
