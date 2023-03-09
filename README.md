@@ -1,13 +1,21 @@
 # k8sTraining
 Apache, Nginx, Jenkins, Istio, Kiali (for the moment)
 
-Check ***TrainingPathProject.pdf*** or README folder to read instructions 😊
+Check ***TrainingPathProject.pdf*** for full readme 😊
 
 To deploy the whole scenario execute:
 
 ``` bash
 ./autoDeploy.sh
 ```
+
+If you'd rather play it slowly, just:
+``` bash
+git clone https://github.com/huzmgod/k8sTraining.git
+cd k8sTraining
+```
+***-----------------------------------------------------------------------------------------------------------------------***
+
 
 ***Spanish Full README (without images, which are in the pdf):***
 @author Iván Pérez Doña (TraceRt)
