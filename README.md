@@ -34,8 +34,8 @@ nodes:
 - role: control-plane
  extraPortMappings:
  - containerPort: 30000
- hostPort: 30000
- protocol: TCP
+   hostPort: 30000
+   protocol: TCP
 ```
 **NOTAS:**  
 
