@@ -28,7 +28,7 @@ export PATH=$PWD/bin:$PATH
 istioctl install --set profile=default
 # You might have to do this to make gateway work properly as ingress:
 kubectl label namespace default istio-injection=enabled
-kubectl apply -f loadBalancernginx.yaml
+kubectl apply -f loadBalancerNginx.yaml
 export INGRESS_NAME=istio-ingressgateway
 export INGRESS_NS=istio-system
 export INGRESS_HOST=127.0.0.1
