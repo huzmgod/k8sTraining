@@ -18,12 +18,11 @@ cd k8sTraining
 
 
 ***Spanish Full README (without images, which are in the pdf):***
-@author Iván Pérez Doña (TraceRt)
 
 **Setting up Nginx as a Reverse Proxy for Apache using K8s. Jenkins, Istio, K8s Dashboard and Kiali deployed**
 
 1. **Instalar kind: [https://kind.sigs.k8s.io/docs/user/quick-start/#installation](https://kind.sigs.k8s.io/docs/user/quick-start/#installation)**
-1. **Crear archivo de configuración de cluster (cluster-config.yaml):** 
+1. **Crear archivo de configuración de cluster (cluster-config.yaml):**
 
 cluster-config.yaml
 
@@ -37,7 +36,7 @@ nodes:
    hostPort: 30000
    protocol: TCP
 ```
-**NOTAS:**  
+**NOTAS:**
 
 - el extraPortMappings es importante para entornos que usen Docker Desktop, porque sino  la  configuración  de  kind  impide  luego  acceder  a  contenidos  del  servidor Apache (u otro) a través de localhost:30000  (u otro puerto mayor que el 30000). Para más documentación: [https://kind.sigs.k8s.io/docs/user/configuration/#extra-port-mappings](https://kind.sigs.k8s.io/docs/user/configuration/#extra-port-mappings)**
 
@@ -144,11 +143,11 @@ spec:
       - name: html
         configMap:
           name: html
-``` 
+```
 
 
 
-5. **Crear el ConfigMap para configurar nginx como reverse proxy (nginx-conf.yaml)** 
+5. **Crear el ConfigMap para configurar nginx como reverse proxy (nginx-conf.yaml)**
 
 ``` yaml
 apiVersion: v1
@@ -177,7 +176,7 @@ data:
     }
 ```
 
-**NOTAS:** 
+**NOTAS:**
 
 - *La  directiva  worker\_connections  controla  el  número  máximo  de  conexiones simultáneas  que  pueden  ser  manejadas  por  un  worker  process  de  Nginx.  Se  debe escalar al tráfico, 1024 es un ejemplo.*
 - *Está mapeado el puerto 80 de apache al 8080 para evitar conflictos con el pod de nginx.*
@@ -185,24 +184,24 @@ data:
 6. **Aplicar configuraciones al clúster:**
 
 ``` bash
-kubectl apply -f nginx.yaml 
-kubectl apply -f apache.yaml 
+kubectl apply -f nginx.yaml
+kubectl apply -f apache.yaml
 kubectl apply -f nginx-conf.yaml
 ```
 Comprobamos que todo va bien
 ```bash
 kubectl get pods
 kubectl exec <nombre de tu pod de nginx> -- cat /etc/nginx/nginx.conf
-``` 
+```
 
 7. **Si tenemos un HTML personalizado lo podemos usar para verlo a través de nginx y asegurarnos de que todo está funcionando bien hasta aquí.**
 
-*Los ficheros que dejo se llaman custom.html y custom.css, pero pueden ser cualquier otros. Es un html de Dragon ball que está bastante guay.* 
+*Los ficheros que dejo se llaman custom.html y custom.css, pero pueden ser cualquier otros. Es un html de Dragon ball que está bastante guay.*
 
-- **Creamos el ConfigMap de los ficheros html y css:** 
+- **Creamos el ConfigMap de los ficheros html y css:**
 
 ```bash
-kubectl create configmap html --from-file=custom.html --from-file=custom.css 
+kubectl create configmap html --from-file=custom.html --from-file=custom.css
 ```
 
 NOTA: También se deja el fichero html.yaml como ConfigMap a aplicar con kubectl
@@ -230,19 +229,19 @@ spec:
           name: html
 ```
 
-- **Aplicamos las configuraciones:** 
+- **Aplicamos las configuraciones:**
 
 ```bash
 kubectl apply -f apache.yaml
 ```
 
-- **Comprobamos que todo se ha cargado y va correctamente el reverse proxy:** 
+- **Comprobamos que todo se ha cargado y va correctamente el reverse proxy:**
 
 ```bash
 kubectl exec <nombre de tu pod de nginx> -- curl localhost/custom.html
 ```
 
-8. **Hasta aquí deberíamos tener esto bien configurado** 
+8. **Hasta aquí deberíamos tener esto bien configurado**
 
 **Y a través de localhost:30000 accederíamos a nuestra página web custom.html**
 
@@ -252,10 +251,10 @@ kind delete cluster –-name=<nombreDeTuCluster>
 kind create cluster --config=cluster-config.yaml --name=<nombre-que-quieras>
 kubectl apply -k .
 ```
-**Todo listo. Haz las comprobaciones anteriores (nginx.conf, localhost:30000, etc.) NOTA:**  
+**Todo listo. Haz las comprobaciones anteriores (nginx.conf, localhost:30000, etc.) NOTA:**
 
 - **Cuidado con copiar y pegar, los guiones no siempre se copian bien.**
-- **Ya sé que hubiera venido bien esto antes, pero tenemos que repasar todo desde el principio** 😊**.** 
+- **Ya sé que hubiera venido bien esto antes, pero tenemos que repasar todo desde el principio** 😊**.**
 
 **---------------------------------- K8S DASHBOARD -----------------------------------------**
 
@@ -265,17 +264,17 @@ kubectl apply -k .
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommende d.yaml --validate=false
-``` 
+```
 
-2. **Verificamos que está disponible el pod y que se han creado bien: 
-```bash 
+2. **Verificamos que está disponible el pod y que se han creado bien:
+```bash
 kubectl get pod -n kubernetes-dashboard
-``` 
+```
 
 3. **Creamos un ServiceAccount y un ClusterRoleBinding para dar accesos de administrador al clúster:**
 
 ```bash
-kubectl create serviceaccount -n kubernetes-dashboard admin-user 
+kubectl create serviceaccount -n kubernetes-dashboard admin-user
 
 kubectl create clusterrolebinding  -n kubernetes-dashboard admin-user  --clusterrole cluster-admin --serviceaccount=kubernetes-dashboard:admin-user
 ```
@@ -285,8 +284,8 @@ kubectl create clusterrolebinding  -n kubernetes-dashboard admin-user  --cluster
 ```bash
 token=$(kubectl  -n  kubernetes-dashboard  describe  secret  $(kubectl  -n  kubernetes - dashboard get secret | awk '/^admin-user/{print $1}') | awk '$1=="token:"{print $2}')
 ```
-5. **Comprobamos que se ha almacenado bien en la variable token: echo $token** 
-6. **Podemos acceder al Dashboard por CLI escribiendo:** 
+5. **Comprobamos que se ha almacenado bien en la variable token: echo $token**
+6. **Podemos acceder al Dashboard por CLI escribiendo:**
 
 ```bash
 kubectl proxy
@@ -300,7 +299,7 @@ kubectl proxy
 
 1. **Para completar el clúster, vamos a introducir Jenkins también. Crearemos un servicio de tipo NodePort mapeado al hostPort 30001, como veremos. El fichero yaml que contiene el deployment y el service es:**
 
-**jenkins.yaml:** 
+**jenkins.yaml:**
 ```yaml
 apiVersion: v1
 kind: Service
@@ -349,9 +348,9 @@ location /jenkins {
 
 }
 ```
-*En mi caso, no puedo hacerlo así por problemas de compatibilidad de kind con wsl2. Para  ello,  he  modificado  el  fichero  cluster-config.yaml,  escribiendo  los extraPortMappings que necesitaremos más adelante. Además, he añadido un par de workers y he añadido una etiqueta en el máster para agregar un ingress controller más adelante:* 
+*En mi caso, no puedo hacerlo así por problemas de compatibilidad de kind con wsl2. Para  ello,  he  modificado  el  fichero  cluster-config.yaml,  escribiendo  los extraPortMappings que necesitaremos más adelante. Además, he añadido un par de workers y he añadido una etiqueta en el máster para agregar un ingress controller más adelante:*
 
-**cluster-config.yaml** 
+**cluster-config.yaml**
 
 ``` yaml
 kind: Cluster
@@ -391,7 +390,7 @@ nodes:
 ```
 
 4. **Finalmente, podemos acceder a nginx a través de localhost:30000 y a Jenkins a través de localhost:30001. Lo de nginx ya sabemos cómo va, pasemos a Jenkins:**
-- *Unlock Jenkins:* **necesitamos la contraseña inicial. Ejecutamos:** 
+- *Unlock Jenkins:* **necesitamos la contraseña inicial. Ejecutamos:**
 ``` bash
 kubectl get pods
 kubectl exec <nombre-pod-jenkins> -- cat** /var/jenkins\_home/secrets/initialAdminPassword**
@@ -399,9 +398,9 @@ kubectl exec <nombre-pod-jenkins> -- cat** /var/jenkins\_home/secrets/initialAdm
 
 - **Nos vamos a localhost:30001 e introducimos la contraseña inicial.**
 
-- **¡Instala los plugins recomendados, crea tu usuario de administrador y listo!** 
+- **¡Instala los plugins recomendados, crea tu usuario de administrador y listo!**
 
-**NOTAS:**  
+**NOTAS:**
 
 - **Si  quieres  utilizar  un  nombre  más  llamativo  que  “localhost”,  puedes  modificar  el fichero  /etc/hosts  de  tu  máquina  añadiendo  la  línea  127.0.0.1  <nombre-de-dominio-guay>. Obtendrías algo como esto:**
 
@@ -418,7 +417,7 @@ kubectl exec <nombre-pod-jenkins> -- cat** /var/jenkins\_home/secrets/initialAdm
 - *El "VirtualService" es un objeto de Istio que permite definir cómo el tráfico debe ser dirigido desde el Gateway hacia los servicios back-end en el clúster.*
 
 10. **Instalación de Istio en clúster:**
-- **Descarga e instalación de Istio:** 
+- **Descarga e instalación de Istio:**
 
 ```bash
 curl -L https://istio.io/downloadIstio | sh -
@@ -426,32 +425,32 @@ cd istio-*
 export PATH=$PWD/bin:$PATH
 ```
 
-- **Comprobar que los CRDs están instalados con:** 
+- **Comprobar que los CRDs están instalados con:**
 
 ```bash
 kubectl get crds | grep 'istio.io\|certmanager.k8s.io' | wc -l
 ```
 
-- **Si obtenemos 0, ejecutar:** 
+- **Si obtenemos 0, ejecutar:**
 
 ```bash
 istioctl install --set profile=default
 ```
 
-- **Comprobar que funciona  todo  y que se ha creado un ingress  Gateway  y un pod de istio:** 
+- **Comprobar que funciona  todo  y que se ha creado un ingress  Gateway  y un pod de istio:**
 
 ```bash
 kubectl get pods -n istio-system
-``` 
+```
 
-- **Habilitar Istio para el namespace en el que están desplegados los pods de Apache, Nginx y jenkins:** 
+- **Habilitar Istio para el namespace en el que están desplegados los pods de Apache, Nginx y jenkins:**
 
 ``` bash
 kubectl label namespace default istio-injection=enabled
 ```
 
-11. **Para hacer una configuración sencilla de Istio en este escenario, podríamos agregar un balanceador de carga para el servicio de nginx utilizando el control de tráfico de Istio. Para ello:** 
-- **Generar un balanceador de carga para el servicio de nginx. Creamos un VirtualService y un Gateway en Istio para nginx:** 
+11. **Para hacer una configuración sencilla de Istio en este escenario, podríamos agregar un balanceador de carga para el servicio de nginx utilizando el control de tráfico de Istio. Para ello:**
+- **Generar un balanceador de carga para el servicio de nginx. Creamos un VirtualService y un Gateway en Istio para nginx:**
 
 **loadBalancerNginx.yaml:**
 
@@ -495,9 +494,9 @@ spec:
 kubectl apply -f loadBalancerNginx.yaml
 ```
 
-**NOTAS:** 
+**NOTAS:**
 
-- **Teóricamente deberíamos poder acceder a nginx a través de http://<nodeIP>:30000. En realidad, por trabajar en local kind nos pone las cosas más difíciles ya que nuestro  entorno no soporta balanceadores de carga externos. Esto  no se arregla sin modificar el fichero de configuración del kubelet, el cluster-config, etc. Si se soportara un balanceador externo, el procedimiento sería modificar los exports de la siguiente forma (en mi caso para wsl2):** 
+- **Teóricamente deberíamos poder acceder a nginx a través de http://<nodeIP>:30000. En realidad, por trabajar en local kind nos pone las cosas más difíciles ya que nuestro  entorno no soporta balanceadores de carga externos. Esto  no se arregla sin modificar el fichero de configuración del kubelet, el cluster-config, etc. Si se soportara un balanceador externo, el procedimiento sería modificar los exports de la siguiente forma (en mi caso para wsl2):**
 
 ``` bash
 export INGRESS_NAME=istio-ingressgateway
@@ -536,15 +535,15 @@ spec:
 - **Es posible que haya que reiniciar los deployments (o hacer un delete de los pods) para que tengan istio inyectado:**
 
 ```bash
-kubectl rollout restart deployment nginx 
-kubectl rollout restart deployment apache 
-kubectl delete pods --all** 
+kubectl rollout restart deployment nginx
+kubectl rollout restart deployment apache
+kubectl delete pods --all**
 ```
 
 - **Comprobar que todo funciona bien con:**
 ``` bash
 istioctl analyze
-kubectl get gateway 
+kubectl get gateway
 kubectl get vs
 ```
 
@@ -571,11 +570,11 @@ kubectl -n istio-system get svc kiali
 istioctl dashboard kiali
 ```
 
-**CONCLUSIÓN:** 
+**CONCLUSIÓN:**
 
-**Istio es un servicio muy completo, que se puede integrar con prometheus, el propio dashboard de Kubernetes, y muchísimos servicios y plataformas más. Mejoraremos las configuraciones de Istio en las siguientes prácticas donde, entre otras cosas, instalaremos Prometheus a través de Istio, y nos centraremos más en la monitorización del clúster.** 
+**Istio es un servicio muy completo, que se puede integrar con prometheus, el propio dashboard de Kubernetes, y muchísimos servicios y plataformas más. Mejoraremos las configuraciones de Istio en las siguientes prácticas donde, entre otras cosas, instalaremos Prometheus a través de Istio, y nos centraremos más en la monitorización del clúster.**
 
-**NOTAS IMPORTANTE:** 
+**NOTAS IMPORTANTE:**
 
 -	Todo el escenario se puede montar ejecutando el fichero autoDeploy.py, por si en algún momento hay algún problema. El fichero acepta un solo input, que es el nombre del clúster. Si quieres dejarlo por defecto, el nombre es “trainingPath” (pulsa Enter).
 ```bash
@@ -596,5 +595,5 @@ python3 autoDeploy.py
 - https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/#using-node-ports-of-the-ingress-gateway-service
 - https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/#using-node-ports-of-the-ingress-gateway-service
 
-- https://istio.io/latest/docs/examples/bookinfo/#determine-the-ingress-ip-and-port 
+- https://istio.io/latest/docs/examples/bookinfo/#determine-the-ingress-ip-and-port
 - https://istio.io/latest/docs/examples/bookinfo/#determine-the-ingress-ip-and-port
